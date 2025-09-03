@@ -52,7 +52,7 @@ resource "google_compute_firewall" "airflow_firewall"{
   }
 
   # 此規則將會應用到所有帶有 "airflow-vm" 標籤的 VM。
-  target_tags=["airflow_vm"]
+  target_tags=["airflow-vm"]
 
   source_ranges=[var.allowed_ip]
 
