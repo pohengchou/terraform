@@ -36,8 +36,8 @@ resource "google_compute_instance" "airflow_vm" {
 
   # 啟動腳本會在 VM 首次建立時自動運行。
   # 這個腳本會安裝並配置 Docker 和 Docker Compose。
-
-
+  metadata_startup_script = file("startup-script.sh")
+}
 
 
 # 防火牆規則，允許流量進入我們的 VM。
