@@ -16,9 +16,9 @@ provider "google"{
 
 # 布署google_bigquery_dataset 
 resource "google_bigquery_dataset" "data_warehouse"{
-    dataset_id="${var.gcp_project_id}_data_warehouse"
+    dataset_id="ubike_data_warehouse"
     description = "Dataset for storing transformed data models from dbt."
-    region=var.gcp_region
+    location=var.gcp_region
 }
 
 # 布署 GCS_bucket

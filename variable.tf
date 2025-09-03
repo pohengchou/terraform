@@ -17,5 +17,5 @@ variable "gcp_machine_type" {
 # 允許的IP位置
 variable "allowed_ip"{
   type = string
-  description= IP which allowed to connect this project
+  description= "IP which allowed to connect this project"
 }
