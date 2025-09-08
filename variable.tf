@@ -14,6 +14,12 @@ variable "gcp_machine_type" {
   description = "The machine type for the Google Compute Engine VM."
 }
 
+#硬碟容量
+variable "gcp_disk_size_gb" {
+  type= number
+  description =  "The size of the boot disk in GB."
+}
+
 # 允許的IP位置
 variable "allowed_ip"{
   type = string

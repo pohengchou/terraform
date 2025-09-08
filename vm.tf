@@ -12,6 +12,7 @@ resource "google_compute_instance" "airflow_vm" {
   boot_disk {
     initialize_params {
       image = "ubuntu-2204-jammy-v20250805"
+      size=var.gcp_disk_size_gb
     }
   }
 
