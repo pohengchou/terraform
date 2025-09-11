@@ -25,3 +25,27 @@ variable "allowed_ip"{
   type = string
   description= "IP which allowed to connect this project"
 }
+
+#
+variable "gcs_bucket_name_suffix"{
+  type= string
+  description= "The suffix for the GCS bucket name."
+}
+
+#
+variable "bigquery_dataset_id"{
+  type = string
+  description= "The ID for the BigQuery dataset."
+}
+
+#
+variable "service_account_id"{
+  type = string
+  description= "The ID for the service account."
+}
+
+#
+variable "secret_id"{
+  type = string
+  description= "The ID for the Secret Manager secret."
+}
