@@ -16,9 +16,17 @@ provider "google"{
 
 # 布署google_bigquery_dataset 
 resource "google_bigquery_dataset" "data_warehouse"{
-    dataset_id=var.bigquery_dataset_id
+    dataset_id="${var.bigquery_dataset_id}_data_warehouse"
     description = "Dataset for storing transformed data models from dbt."
     location=var.gcp_region
+}
+
+# 部署原始資料集 (Staging Dataset)
+# 用於存放從 GCS 載入的原始資料。
+resource "google_bigquery_dataset" "staging_dataset" {
+  dataset_id  = "${var.bigquery_dataset_id}_staging"
+  description = "Dataset for raw data loaded from GCS. It serves as the source for dbt."
+  location    = var.gcp_region
 }
 
 # 布署 GCS_bucket
