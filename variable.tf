@@ -39,6 +39,13 @@ variable "bigquery_dataset_id"{
 }
 
 #
+variable "staging_table_expiration_ms" {
+  description = "The default table expiration time in milliseconds for the staging dataset."
+  type        = number
+  default     = 86400000 # 24 小時
+}
+
+#
 variable "service_account_id"{
   type = string
   description= "The ID for the service account."

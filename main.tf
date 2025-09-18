@@ -27,6 +27,7 @@ resource "google_bigquery_dataset" "staging_dataset" {
   dataset_id  = "${var.bigquery_dataset_id}_staging"
   description = "Dataset for raw data loaded from GCS. It serves as the source for dbt."
   location    = var.gcp_region
+  default_table_expiration_ms = var.staging_table_expiration_ms
 }
 
 # 布署 GCS_bucket
