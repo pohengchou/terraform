@@ -52,6 +52,13 @@ resource "google_project_service" "dataproc_api" {
     disable_on_destroy = false
 }
 
+# 啟用 Vertex AI 服務 (Workbench 所需)
+resource "google_project_service" "vertex_ai_api" {
+    project = var.gcp_project_id
+    service = "aiplatform.googleapis.com"
+    disable_on_destroy = false
+}
+
 
 # 建立Servise Account
 resource "google_service_account" "airflow_service_account"{

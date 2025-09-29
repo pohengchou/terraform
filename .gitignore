@@ -211,6 +211,7 @@ __marimo__/
 *.tfvars
 *.tfstate
 *.tfstate.backup
+workbench.tf
 
 # dbt 
 target/
