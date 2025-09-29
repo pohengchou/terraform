@@ -45,6 +45,14 @@ resource "google_storage_bucket" "data_lake_bucket"{
     }
 }
 
+# 啟用 Dataproc 服務
+resource "google_project_service" "dataproc_api" {
+    project = var.gcp_project_id
+    service = "dataproc.googleapis.com"
+    disable_on_destroy = false
+}
+
+
 # 建立Servise Account
 resource "google_service_account" "airflow_service_account"{
     account_id =var.service_account_id
@@ -57,7 +65,7 @@ resource "google_service_account_key" "airflow_key" {
   private_key_type   = "TYPE_GOOGLE_CREDENTIALS_FILE"
 }
 
-#建立secretmanager
+# 建立secretmanager
 resource "google_project_service" "secretmanager" {
   project = var.gcp_project_id
   service = "secretmanager.googleapis.com"
@@ -122,6 +130,17 @@ resource "google_project_iam_member" "bigquery_job_user_iam"{
     role="roles/bigquery.jobUser"
     member="serviceAccount:${google_service_account.airflow_service_account.email}"
 }
+
+# 賦予 Airflow 服務帳戶 Dataproc Editor 角色
+# 這是讓它能夠建立、提交任務和刪除叢集的關鍵權限。
+resource "google_project_iam_member" "dataproc_editor_iam" {
+    project = var.gcp_project_id
+    role    = "roles/dataproc.editor"
+    # 確保 API 啟用後再賦予權限
+    depends_on = [google_project_service.dataproc_api] 
+    member  = "serviceAccount:${google_service_account.airflow_service_account.email}"
+}
+
 
 # 輸出服務帳號的電子郵件，方便其他資源使用
 output "airflow_service_account_email" {
