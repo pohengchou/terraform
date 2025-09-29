@@ -59,6 +59,13 @@ resource "google_project_service" "vertex_ai_api" {
     disable_on_destroy = false
 }
 
+# 啟用 Notebooks API (底層 API，是 Vertex AI Workbench 實例的運行基礎)
+resource "google_project_service" "notebooks_api" {
+    project = var.gcp_project_id
+    service = "notebooks.googleapis.com"
+    disable_on_destroy = false
+}
+
 
 # 建立Servise Account
 resource "google_service_account" "airflow_service_account"{
