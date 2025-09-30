@@ -52,21 +52,6 @@ resource "google_project_service" "dataproc_api" {
     disable_on_destroy = false
 }
 
-# 啟用 Vertex AI 服務 (Workbench 所需)
-resource "google_project_service" "vertex_ai_api" {
-    project = var.gcp_project_id
-    service = "aiplatform.googleapis.com"
-    disable_on_destroy = false
-}
-
-# 啟用 Notebooks API (底層 API，是 Vertex AI Workbench 實例的運行基礎)
-resource "google_project_service" "notebooks_api" {
-    project = var.gcp_project_id
-    service = "notebooks.googleapis.com"
-    disable_on_destroy = false
-}
-
-
 # 建立Servise Account
 resource "google_service_account" "airflow_service_account"{
     account_id =var.service_account_id
@@ -154,7 +139,6 @@ resource "google_project_iam_member" "dataproc_editor_iam" {
     depends_on = [google_project_service.dataproc_api] 
     member  = "serviceAccount:${google_service_account.airflow_service_account.email}"
 }
-
 
 # 輸出服務帳號的電子郵件，方便其他資源使用
 output "airflow_service_account_email" {
