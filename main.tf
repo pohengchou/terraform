@@ -140,6 +140,15 @@ resource "google_project_iam_member" "dataproc_editor_iam" {
     member  = "serviceAccount:${google_service_account.airflow_service_account.email}"
 }
 
+# 賦予 Airflow 服務帳戶 Dataproc Worker 角色
+# 這是讓服務帳號能夠在 Dataproc 叢集節點上運行 agent 的關鍵權限
+resource "google_project_iam_member" "dataproc_worker_iam" {
+    project = var.gcp_project_id
+    role    = "roles/dataproc.worker"
+    depends_on = [google_project_service.dataproc_api]
+    member  = "serviceAccount:${google_service_account.airflow_service_account.email}"
+}
+
 # 輸出服務帳號的電子郵件，方便其他資源使用
 output "airflow_service_account_email" {
   value = google_service_account.airflow_service_account.email
