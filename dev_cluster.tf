@@ -23,6 +23,16 @@ resource "google_dataproc_cluster" "ubike_dev_cluster" {
       enable_http_port_access = true
     }
 
+    # ----------------------------------------------------
+    # *** 【新增區塊】: 修正 Jupyter IP 綁定問題的初始化動作 ***
+    # ----------------------------------------------------
+    initialization_action {
+      # 腳本路徑: 請確保 fix-jupyter-binding.sh 已上傳到此 GCS 路徑
+      script = "gs://${google_storage_bucket.data_lake_bucket.name}/dataproc/init_actions/fix-jupyter-binding.sh"
+      timeout_sec = 600
+    }
+    # ----------------------------------------------------
+
     # 自動刪除設定 - 閒置 2 小時後自動刪除(防止忘記關閉)
     lifecycle_config {
       idle_delete_ttl = "7200s"
