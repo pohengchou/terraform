@@ -3,35 +3,37 @@
 # 用途: Jupyter 互動式開發,當日用完即關閉
 # 成本優化: 最小配置 + 自動關閉 + 可搶佔 Worker
 # -----------------------------------------------------------
+# 指定provider版本
+terraform {
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "6.48.0"
+    }
+  }
+}
+
+# 設定Provider
+provider "google"{
+    project=var.gcp_project_id
+    region=var.gcp_region
+}
+
 resource "google_dataproc_cluster" "ubike_dev_cluster" {
   name    = "${var.gcp_project_id}-dev-jupyter-cluster"
   project = var.gcp_project_id
   region  = var.gcp_region
 
-  # 確保 IAM 權限完全生效後才建立叢集
-  depends_on = [
-    google_project_service.dataproc_api,
-    google_project_iam_member.dataproc_worker_iam,
-    google_project_iam_member.dataproc_editor_iam
-  ]
 
   cluster_config {
-    staging_bucket = google_storage_bucket.data_lake_bucket.name
+    staging_bucket = var.staging_bucket_name
 
     # 啟用 Component Gateway - 通過瀏覽器安全訪問 Jupyter
     endpoint_config {
       enable_http_port_access = true
     }
 
-    # ----------------------------------------------------
-    # *** 【新增區塊】: 修正 Jupyter IP 綁定問題的初始化動作 ***
-    # ----------------------------------------------------
-    initialization_action {
-      # 腳本路徑: 請確保 fix-jupyter-binding.sh 已上傳到此 GCS 路徑
-      script = "gs://${google_storage_bucket.data_lake_bucket.name}/dataproc/init_actions/fix-jupyter-binding.sh"
-      timeout_sec = 600
-    }
-    # ----------------------------------------------------
+
 
     # 自動刪除設定 - 閒置 2 小時後自動刪除(防止忘記關閉)
     lifecycle_config {
@@ -40,10 +42,10 @@ resource "google_dataproc_cluster" "ubike_dev_cluster" {
 
     # 節點配置
     gce_cluster_config {
-      service_account = google_service_account.airflow_service_account.email
+      service_account = var.service_account_email
       
       # 不需要外部 IP(透過 Component Gateway 訪問)
-      internal_ip_only = false
+      internal_ip_only = true
       
       # 標籤用於成本追蹤
       tags = ["dataproc-dev", "jupyter"]
