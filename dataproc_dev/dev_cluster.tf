@@ -52,13 +52,12 @@ resource "google_dataproc_cluster" "ubike_dev_cluster" {
     }
 
     # Master 節點 (運行 Jupyter + Spark Driver)
-    # 建議: e2-standard-2 足夠開發使用
     master_config {
       num_instances = 1
-      machine_type  = "e2-standard-2"  # 2 vCPU, 8 GB RAM
+      machine_type  = "e2-standard-4"  # 4 vCPU, 16 GB RAM
       
       disk_config {
-        boot_disk_type    = "pd-standard"
+        boot_disk_type    = "pd-balanced"
         boot_disk_size_gb = 100  # 減少到 100GB(開發用途足夠)
       }
     }
@@ -70,7 +69,7 @@ resource "google_dataproc_cluster" "ubike_dev_cluster" {
       machine_type  = "e2-standard-2"
       
       disk_config {
-        boot_disk_type    = "pd-standard"
+        boot_disk_type    = "pd-balanced"
         boot_disk_size_gb = 100
       }
     }
@@ -96,8 +95,8 @@ resource "google_dataproc_cluster" "ubike_dev_cluster" {
 
       # Spark 記憶體配置(開發用途,保守配置)
       override_properties = {
-        "spark:spark.driver.memory"    = "3g"
-        "spark:spark.executor.memory"  = "3g"
+        "spark:spark.driver.memory"    = "6g"
+        "spark:spark.executor.memory"  = "5g"
         "spark:spark.executor.cores"   = "2"
         "spark:spark.executor.instances" = "2"
       }
