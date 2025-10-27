@@ -45,6 +45,16 @@ resource "google_storage_bucket" "data_lake_bucket"{
     }
 }
 
+# 存放 PySpark 腳本的資料夾 (供 Dataproc 執行)
+# 路徑: gs://<bucket_name>/scripts/
+resource "google_storage_bucket_object" "scripts_folder" { # <-- (A) 新增的資源類型
+  # 參考您已定義的 GCS 儲存桶 (假設名稱為 data_lake_bucket)
+  bucket = google_storage_bucket.data_lake_bucket.name 
+  name   = "scripts/" # <-- (B) 透過這個屬性名稱和斜線尾巴建立資料夾
+  content_type = "application/x-directory"
+  content = " "
+}
+
 # 啟用 Dataproc 服務
 resource "google_project_service" "dataproc_api" {
     project = var.gcp_project_id
