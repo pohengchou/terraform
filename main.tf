@@ -181,6 +181,14 @@ resource "google_project_iam_member" "dataproc_worker_iam" {
     member  = "serviceAccount:${google_service_account.airflow_service_account.email}"
 }
 
+# 賦予 Compute Instance Admin V1 角色 (Autoscaling 必需)
+# 這是為了讓 Dataproc 叢集的 Worker (使用此 SA) 有權限進行自動調度 (創建/刪除 VM 實例)。
+resource "google_project_iam_member" "compute_instance_admin_iam" {
+    project = var.gcp_project_id
+    role    = "roles/compute.instanceAdmin.v1"
+    member  = "serviceAccount:${google_service_account.airflow_service_account.email}"
+}
+
 # 輸出服務帳號的電子郵件，方便其他資源使用
 output "airflow_service_account_email" {
   value = google_service_account.airflow_service_account.email
