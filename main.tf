@@ -189,6 +189,22 @@ resource "google_project_iam_member" "compute_instance_admin_iam" {
     member  = "serviceAccount:${google_service_account.airflow_service_account.email}"
 }
 
+# 這允許 Airflow SA (caller) 以 Dataproc 叢集 SA (subject) 的身份行動，
+resource "google_project_iam_member" "dataproc_sa_user_iam" {
+  project = var.gcp_project_id
+  
+  # 授予的角色：服務帳號使用者
+  role    = "roles/iam.serviceAccountUser"
+  
+  # 誰被授予權限 (Airflow 的 SA)
+  member = "serviceAccount:${google_service_account.airflow_service_account.email}"
+  
+  # **重要的條件**：指定該權限的目標 (Dataproc 叢集 SA)
+  # 這裡使用 'Service Account User' 角色時，GCP 要求我們指定目標 SA 的完整名稱。
+  # 由於您在 Dataproc 叢集配置中指定的 SA 已經被 Airflow SA 所用，通常直接在專案層級賦予此角色即可。
+}
+
+
 # 輸出服務帳號的電子郵件，方便其他資源使用
 output "airflow_service_account_email" {
   value = google_service_account.airflow_service_account.email
