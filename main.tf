@@ -62,6 +62,28 @@ resource "google_project_service" "dataproc_api" {
     disable_on_destroy = false
 }
 
+# dataproc自動縮放政策(決定上限/下限)
+resource "google_dataproc_autoscaling_policy" "ubike_weather_policy" {
+  policy_id = "ubike-weather-policy" 
+  project   = var.gcp_project_id 
+  location    = var.gcp_region 
+  
+  # 核心 Worker 節點的配置
+  worker_config {
+    max_instances = 10
+    min_instances = 2
+    # 設置 Worker 擴縮比例
+  }
+
+  basic_algorithm {
+    yarn_config {
+      graceful_decommission_timeout = "30s"
+      scale_down_factor = 0.5
+      scale_up_factor   = 0.5
+    }
+  }
+}
+
 # 建立Servise Account
 resource "google_service_account" "airflow_service_account"{
     account_id =var.service_account_id
